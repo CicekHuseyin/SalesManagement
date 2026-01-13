@@ -1,0 +1,49 @@
+﻿@model List<ProductListViewModel>
+
+<h3>Ürün Listesi</h3>
+
+<div id="productGrid" style="height: 500px;"></div>
+
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DevExtreme CSS -->
+<link rel="stylesheet"
+      href="https://cdn3.devexpress.com/jslib/23.2.3/css/dx.light.css" />
+
+<!-- DevExtreme JS -->
+<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/dx.all.js"></script>
+
+<script>
+        $(function () {
+            $("#productGrid").dxDataGrid({
+        dataSource: "/Product/GetProducts",   // DevExtreme kendisi GET yapar
+        keyExpr: "id",
+        columns: [
+            { dataField: "name", caption: "Ürün Adı" },
+            { dataField: "categoryName", caption: "Kategori" },
+            { dataField: "salesprice", caption: "Satış Fiyatı" }
+        ],
+        showBorders: true,
+        paging: { pageSize: 10 },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20],
+            showInfo: true
+        },
+        filterRow: { visible: true },
+        searchPanel: {
+            visible: true,
+            width: 240,
+            placeholder: "Ara..."
+        },
+        sorting: { mode: "multiple" },
+        rowAlternationEnabled: true
+    });
+
+    });
+
+</script>
+
+

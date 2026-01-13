@@ -22,10 +22,7 @@ namespace SalesManagement.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("Server=.;Database=test;Trusted_Connection=True;TrustServerCertificate=True");
-            }
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
