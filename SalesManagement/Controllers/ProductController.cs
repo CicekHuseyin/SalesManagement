@@ -23,14 +23,12 @@ public class ProductController : Controller
         return View();
     }
 
-    // CREATE GET
     public IActionResult Create()
     {
         ViewBag.Categories = _categoryService.GetCategories();
         return View();
     }
 
-    // CREATE POST
     [HttpPost]
     public IActionResult Create(ProductViewModel model)
     {
@@ -47,10 +45,11 @@ public class ProductController : Controller
             CategoryId = model.CategoryId
         });
 
+        TempData["ProductSuccess"] = "Ürün başarıyla kaydedildi";
+
         return RedirectToAction(nameof(Index));
     }
 
-    // EDIT GET
     public IActionResult Edit(int id)
     {
         var product = _productService.GetProducts()
@@ -70,7 +69,6 @@ public class ProductController : Controller
         });
     }
 
-    // EDIT POST
     [HttpPost]
     public IActionResult Edit(ProductViewModel model)
     {
@@ -91,10 +89,10 @@ public class ProductController : Controller
 
             _productService.UpdateProduct(existingProduct);
         }
+        TempData["ProductSuccess"] = "Ürün başarıyla güncellendi";
 
         return RedirectToAction(nameof(Index));
     }
-
 
     public IActionResult GetProducts()
     {

@@ -63,11 +63,25 @@ public class StockService : IStockService
         var stock = new Stock
         {
             ProductId = productId,
-            Quantity = -quantity, // ❗ negatif kayıt
+            Quantity = -quantity, // negatif kayıt
             Date = DateTime.Now
         };
 
         _stockRepo.Add(stock);
         _stockRepo.Save();
+    }
+
+    /// <summary>
+    /// Verilen ürün için depoda yeterli stok olup olmadığını kontrol eder.
+    /// </summary>
+    /// <param name="productId">Kontrol edilecek ürünün ID'si</param>
+    /// <param name="quantity">Satış veya işlem için gerekli miktar</param>
+    /// <returns>
+    /// Eğer mevcut stok miktarı belirtilen miktara eşit veya fazlaysa true, aksi halde false döner.
+    /// </returns>
+    public bool HasStock(int productId, double quantity)
+    {
+        var stock = _stockRepo.Get(s => s.ProductId == productId);
+        return (stock?.Quantity ?? 0) >= quantity;
     }
 }

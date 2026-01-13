@@ -1,0 +1,129 @@
+﻿@model SalesViewModel
+@{
+    ViewBag.Title = "Yeni Satış";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Yeni Satış</h5>
+                </div>
+
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+
+                        <div class="mb-3">
+                            <label class="form-label">Ürün</label>
+                            <select asp-for="ProductId"
+                                    asp-items="@(new SelectList(ViewBag.Products ?? new List<Product>(), "Id", "Name"))"
+                                    id="ProductSelect"
+                                    class="form-select">
+                                <option value="">Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Müşteri</label>
+                            <select asp-for="CustomerId"
+                                    asp-items="@(new SelectList(ViewBag.Customers ?? new List<Customer>(), "Id", "Customertitle"))"
+                                    class="form-select">
+                                <option value="">Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Liste Fiyatı</label>
+                            <input asp-for="ListPrice"
+                                   class="form-control"
+                                   readonly
+                                   id="ListPrice" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Satış Fiyatı</label>
+                            <input asp-for="SalesPrice"
+                                   class="form-control"
+                                   id="SalesPrice" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">İskonto Oranı (%)</label>
+                            <input asp-for="DiscountRate"
+                                   class="form-control"
+                                   readonly
+                                   id="DiscountRate" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Adet</label>
+                            <input asp-for="Quantity"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-success">
+                                Satış Ekle
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        function loadProductPrice(productId) {
+            if (!productId) return;
+
+            $.get('/Sales/GetProductPrice', { id: productId })
+                .done(function (data) {
+                    console.log(data); // DEBUG
+
+                    if (data) {
+                        $('#ListPrice').val(data.listPrice);
+                        $('#SalesPrice').val(data.listPrice);
+                        $('#DiscountRate').val(0);
+                    }
+                })
+                .fail(function () {
+                    console.error("Ürün fiyatı getirilemedi");
+                });
+        }
+
+        // Ürün değişince
+        $('#ProductSelect').on('change', function () {
+            loadProductPrice($(this).val());
+        });
+
+        // SAYFA YÜKLENİNCE (seçili ürün varsa)
+        $(document).ready(function () {
+            var selectedProduct = $('#ProductSelect').val();
+            if (selectedProduct) {
+                loadProductPrice(selectedProduct);
+            }
+        });
+
+        // Satış fiyatı değişince iskonto hesapla
+        $('#SalesPrice').on('input', function () {
+            var listPrice = parseFloat($('#ListPrice').val()) || 0;
+            var salesPrice = parseFloat($(this).val()) || 0;
+
+            if (listPrice > 0) {
+                var discount = ((listPrice - salesPrice) / listPrice * 100).toFixed(2);
+                $('#DiscountRate').val(discount);
+            } else {
+                $('#DiscountRate').val(0);
+            }
+        });
+    </script>
+}
+
+

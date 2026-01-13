@@ -7,4 +7,5 @@ public interface IStockService
     void IncreaseStock(int productId, double quantity);
     void DecreaseStock(int productId, double quantity);
     double GetCurrentStock(int productId);
+    bool HasStock(int productId, double quantity);
 }

@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using SalesManagement.Core.Exceptions;
+using SalesManagement.Data.Concretes;
 using SalesManagement.Data.Interfaces;
 using SalesManagement.Models;
 using SalesManagement.Services.Interfaces;
@@ -68,5 +70,18 @@ public class SaleService : ISaleService
         _saleRepo.Save();
     }
 
+    public Sale? GetSaleById(int id)
+    {
+        return _saleRepo.GetById(id);
+    }
+
     public IEnumerable<Sale> GetSales() => _saleRepo.GetAll();
+
+    public List<Sale> GetSalesWithProductAndCustomer()
+    {
+        return _saleRepo.Query()
+            .Include(s => s.Product)
+            .Include(s => s.Customer)
+            .ToList();
+    }
 }

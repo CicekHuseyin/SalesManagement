@@ -6,4 +6,6 @@ public interface ISaleService
 {
     void AddSale(Sale sale);
     IEnumerable<Sale> GetSales();
+    List<Sale> GetSalesWithProductAndCustomer();
+    Sale? GetSaleById(int id);
 }
