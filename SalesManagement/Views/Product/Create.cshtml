@@ -1,0 +1,28 @@
+﻿@model ProductViewModel
+
+<h2>Yeni Ürün</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-2">
+        <label>Ürün Adı</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label>Satış Fiyatı</label>
+        <input asp-for="Salesprice" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label>Kategori</label>
+        <select asp-for="CategoryId" class="form-control">
+            <option value="">Seçiniz</option>
+            @foreach (var cat in ViewBag.Categories)
+            {
+                <option value="@cat.Id">@cat.Name</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Kaydet</button>
+</form>

@@ -8,5 +8,6 @@ public interface IProductService
     IEnumerable<Product> GetProductsWithCategory();
     void AddProduct(Product product);
     void UpdateProduct(Product product);
+    Product GetProductById(int id);
 }
 

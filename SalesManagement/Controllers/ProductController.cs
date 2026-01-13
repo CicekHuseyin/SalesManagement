@@ -18,19 +18,9 @@ public class ProductController : Controller
         _categoryService = categoryService;
     }
 
-    // LIST
     public IActionResult Index()
     {
-        var products = _productService.GetProductsWithCategory()
-        .Select(p => new ProductListViewModel
-        {
-            Id = p.Id,
-            Name = p.Name,
-            Salesprice = p.Salesprice,
-            CategoryName = p.Category != null ? p.Category.Name : ""
-        }).ToList();
-
-        return View(products);
+        return View();
     }
 
     // CREATE GET
@@ -90,16 +80,21 @@ public class ProductController : Controller
             return View(model);
         }
 
-        _productService.UpdateProduct(new Product
+        // Önce mevcut product'ı çek
+        var existingProduct = _productService.GetProductById(model.Id);
+
+        if (existingProduct != null)
         {
-            Id = model.Id,
-            Name = model.Name,
-            Salesprice = model.Salesprice,
-            CategoryId = model.CategoryId
-        });
+            existingProduct.Name = model.Name;
+            existingProduct.Salesprice = model.Salesprice;
+            existingProduct.CategoryId = model.CategoryId;
+
+            _productService.UpdateProduct(existingProduct);
+        }
 
         return RedirectToAction(nameof(Index));
     }
+
 
     public IActionResult GetProducts()
     {
@@ -112,6 +107,6 @@ public class ProductController : Controller
             CategoryName = p.Category != null ? p.Category.Name : ""
         }).ToList();
 
-        return Ok(products);
+        return Json(products);
     }
 }

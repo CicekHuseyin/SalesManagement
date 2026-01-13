@@ -1,0 +1,32 @@
+﻿@model ProductViewModel
+
+<h2>Ürün Güncelle</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-2">
+        <label>Ürün Adı</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label>Satış Fiyatı</label>
+        <input asp-for="Salesprice" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label>Kategori</label>
+        <select asp-for="CategoryId" class="form-control">
+            @foreach (var cat in ViewBag.Categories)
+            {
+                <option value="@cat.Id"
+                        selected="@(cat.Id == Model.CategoryId)">
+                    @cat.Name
+                </option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Güncelle</button>
+</form>

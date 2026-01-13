@@ -1,49 +1,73 @@
-﻿@model List<ProductListViewModel>
-
-<h3>Ürün Listesi</h3>
+﻿<h3>Ürün Listesi</h3>
 
 <div id="productGrid" style="height: 500px;"></div>
 
-
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- DevExtreme CSS -->
-<link rel="stylesheet"
-      href="https://cdn3.devexpress.com/jslib/23.2.3/css/dx.light.css" />
-
-<!-- DevExtreme JS -->
-<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/dx.all.js"></script>
+<!-- Buton tablo altına geliyor -->
+<div style="margin-top: 10px; text-align: left;">
+    <button id="btnAddNew" style="
+        background-color: #28a745;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    ">
+        Yeni Veri Ekle
+    </button>
+</div>
 
 <script>
-        $(function () {
-            $("#productGrid").dxDataGrid({
-        dataSource: "/Product/GetProducts",   // DevExtreme kendisi GET yapar
-        keyExpr: "id",
-        columns: [
-            { dataField: "name", caption: "Ürün Adı" },
-            { dataField: "categoryName", caption: "Kategori" },
-            { dataField: "salesprice", caption: "Satış Fiyatı" }
-        ],
-        showBorders: true,
-        paging: { pageSize: 10 },
-        pager: {
-            showPageSizeSelector: true,
-            allowedPageSizes: [5, 10, 20],
-            showInfo: true
-        },
-        filterRow: { visible: true },
-        searchPanel: {
-            visible: true,
-            width: 240,
-            placeholder: "Ara..."
-        },
-        sorting: { mode: "multiple" },
-        rowAlternationEnabled: true
-    });
+    $(function () {
+        $("#productGrid").dxDataGrid({
+            dataSource: "/Product/GetProducts",
+            keyExpr: "id",
+            columns: [
+                { dataField: "name", caption: "Ürün Adı" },
+                { dataField: "categoryName", caption: "Kategori" },
+                { dataField: "salesprice", caption: "Satış Fiyatı" },
+                {
+                    caption: "Düzenle",
+                    width: 120,
+                    alignment: "center",
+                    cellTemplate: function(container, options) {
+                        $("<div>").append(
+                            $("<button>")
+                                .text("Düzenle")
+                                .css({
+                                    "background-color": "#28a745",
+                                    "color": "white",
+                                    "padding": "5px 15px",
+                                    "border-radius": "5px",
+                                    "border": "none",
+                                    "cursor": "pointer"
+                                })
+                                .on("click", function() {
+                                    window.location.href = "/Product/Edit/" + options.data.id;
+                                })
+                        ).appendTo(container);
+                    }
+                }
+            ],
+            showBorders: true,
+            paging: { pageSize: 10 },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20],
+                showInfo: true
+            },
+            filterRow: { visible: true },
+            searchPanel: {
+                visible: true,
+                width: 240,
+                placeholder: "Ara..."
+            },
+            sorting: { mode: "multiple" },
+            rowAlternationEnabled: true
+        });
 
+        $("#btnAddNew").on("click", function () {
+            window.location.href = "/Product/Create";
+        });
     });
-
 </script>
-
 

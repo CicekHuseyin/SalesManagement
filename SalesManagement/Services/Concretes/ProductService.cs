@@ -50,11 +50,22 @@ public class ProductService : IProductService
         if (product.Id <= 0)
             throw new BusinessException("Geçersiz ürün bilgisi.");
 
+        // Repo'dan mevcut entity'yi çek
         var existingProduct = _productRepo.Get(p => p.Id == product.Id);
         if (existingProduct == null)
             throw new BusinessException("Güncellenecek ürün bulunamadı.");
 
-        _productRepo.Update(product);
+        // Mevcut entity üzerinde güncelleme yap
+        existingProduct.Name = product.Name;
+        existingProduct.Salesprice = product.Salesprice;
+        existingProduct.CategoryId = product.CategoryId;
+
+        _productRepo.Update(existingProduct);
         _productRepo.Save();
+    }
+
+    public Product GetProductById(int id)
+    {
+        return _productRepo.GetById(id);
     }
 }
