@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalesManagement.Models;
 using SalesManagement.Services.Interfaces;
-using SalesManagement.ViewModels;
+using SalesManagement.ViewModels.Purchase;
 
 namespace SalesManagement.Controllers;
 

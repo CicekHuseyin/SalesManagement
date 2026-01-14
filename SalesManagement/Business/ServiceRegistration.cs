@@ -16,6 +16,7 @@ public static class ServiceRegistration
         // Repositories
         // ============================
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        services.AddScoped<ICategorySalesReportRepository, CategorySalesReportRepository>();
 
         // ============================
         // Services
@@ -26,6 +27,7 @@ public static class ServiceRegistration
         services.AddScoped<IStockService, StockService>();
         services.AddScoped<ISaleService, SaleService>();
         services.AddScoped<IPurchaseService, PurchaseService>();
+        services.AddScoped<ICategorySalesReportService, CategorySalesReportService>();
         // ============================
         // FluentValidation
         // ============================

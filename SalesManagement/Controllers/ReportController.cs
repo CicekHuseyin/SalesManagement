@@ -7,14 +7,12 @@ namespace SalesManagement.Controllers;
 
 public class ReportController : Controller
 {
-    private readonly TestDbContext _context;
+    private readonly ICategorySalesReportService _categoryService;
     private readonly IStockService _stockService;
 
-    public ReportController(
-        TestDbContext context,
-        IStockService stockService)
+    public ReportController(ICategorySalesReportService categoryService,IStockService stockService)
     {
-        _context = context;
+        _categoryService = categoryService;
         _stockService = stockService;
     }
 
@@ -30,18 +28,7 @@ public class ReportController : Controller
     [HttpGet]
     public IActionResult GetCategorySalesReport()
     {
-        var result = _context.CategorySalesReportDtos
-            .FromSqlRaw("EXEC SPReportGetAllSalesDetail")
-            .AsEnumerable()
-            .Select(x => new
-            {
-                categoryName = x.CategoryName,
-                totalQuantity = x.TotalQuantity,
-                salesPrice = x.SalesPrice
-            })
-            .OrderByDescending(x => x.totalQuantity)
-            .ToList();
-
+        var result = _categoryService.GetCategorySalesReport();
         return Json(result);
     }
 

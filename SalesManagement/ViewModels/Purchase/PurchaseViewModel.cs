@@ -1,4 +1,4 @@
-﻿namespace SalesManagement.ViewModels;
+﻿namespace SalesManagement.ViewModels.Purchase;
 
 public class PurchaseViewModel
 {
