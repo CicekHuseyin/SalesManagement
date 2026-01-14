@@ -32,16 +32,30 @@ public class StockService : IStockService
         if (quantity <= 0)
             throw new BusinessException("Stok artırma miktarı 0'dan büyük olmalıdır.");
 
-        var stock = new Stock
-        {
-            ProductId = productId,
-            Quantity = quantity,
-            Date = DateTime.Now
-        };
+        var stock = _stockRepo.Get(s => s.ProductId == productId);
 
-        _stockRepo.Add(stock);
+        if (stock == null)
+        {
+            stock = new Stock
+            {
+                ProductId = productId,
+                Quantity = quantity,
+                Date = DateTime.Now
+            };
+
+            _stockRepo.Add(stock);
+        }
+        else
+        {
+            stock.Quantity += quantity;
+            stock.Date = DateTime.Now;
+
+            _stockRepo.Update(stock);
+        }
+
         _stockRepo.Save();
     }
+
 
     /// <summary>
     /// Satış işlemleri sırasında ürün stoğunu azaltır.

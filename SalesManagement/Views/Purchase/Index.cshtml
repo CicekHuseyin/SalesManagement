@@ -1,0 +1,96 @@
+﻿@{
+    ViewData["Title"] = "Alışlar";
+}
+
+<h2>Alış Listesi</h2>
+
+@if (TempData["PurchaseSuccess"] != null)
+{
+    <div id="successPopup" class="success-popup">
+        <div class="popup-content">
+            <div class="checkmark">✓</div>
+            <h5>@TempData["PurchaseSuccess"]</h5>
+        </div>
+    </div>
+}
+
+<div id="purchaseGrid" style="height: 500px;"></div>
+
+<!-- Buton tablo altı sol -->
+<div style="margin-top: 10px; text-align: left;">
+    <button id="btnAddNewPurchase" style="
+        background-color: #28a745;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    ">
+        Yeni Alış Ekle
+    </button>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $("#purchaseGrid").dxDataGrid({
+                dataSource: "/Purchase/GetPurchases",
+                keyExpr: "id",
+                columns: [
+                    { dataField: "productName", caption: "Ürün" },
+                    { dataField: "customerName", caption: "Cari" },
+                    { dataField: "quantity", caption: "Adet" },
+                    { dataField: "price", caption: "Birim Fiyat" },
+                    { dataField: "amount", caption: "Toplam Tutar" },
+                    { dataField: "date", caption: "Tarih", dataType: "date" },
+                    {
+                        caption: "Düzenle",
+                        width: 120,
+                        alignment: "center",
+                        cellTemplate: function (container, options) {
+                            $("<button>")
+                                .text("Düzenle")
+                                .css({
+                                    "background-color": "#28a745",
+                                    "color": "white",
+                                    "padding": "5px 15px",
+                                    "border-radius": "5px",
+                                    "border": "none",
+                                    "cursor": "pointer"
+                                })
+                                .on("click", function () {
+                                    window.location.href = "/Purchase/Edit/" + options.data.id;
+                                })
+                                .appendTo(container);
+                        }
+                    }
+                ],
+                showBorders: true,
+                paging: { pageSize: 10 },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                filterRow: { visible: true },
+                searchPanel: {
+                    visible: true,
+                    width: 240,
+                    placeholder: "Ara..."
+                },
+                sorting: { mode: "multiple" },
+                rowAlternationEnabled: true
+            });
+
+            $("#btnAddNewPurchase").on("click", function () {
+                window.location.href = "/Purchase/Create";
+            });
+        });
+
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('#successPopup').fadeOut(500);
+            }, 2000);
+        });
+    </script>
+}

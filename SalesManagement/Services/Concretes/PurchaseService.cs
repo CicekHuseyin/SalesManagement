@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using SalesManagement.Core.Exceptions;
 using SalesManagement.Data.Interfaces;
 using SalesManagement.Models;
@@ -54,8 +55,39 @@ public class PurchaseService : IPurchaseService
         _purchaseRepo.Save();
     }
 
+    public Purchase? GetPurchaseById(int id)
+    {
+        return _purchaseRepo.GetById(id);
+    }
+
     public IEnumerable<Purchase> GetPurchases()
     {
-        return _purchaseRepo.GetAll();
+        return _purchaseRepo
+       .Query()
+       .Include(p => p.Product)
+       .Include(p => p.Customer)
+       .ToList();
+    }
+
+    public void UpdatePurchase(Purchase purchase)
+    {
+        if (purchase == null)
+            throw new BusinessException("Geçersiz alış kaydı.");
+
+        var existingPurchase = _purchaseRepo.GetById(purchase.Id);
+        if (existingPurchase == null)
+            throw new BusinessException("Alış kaydı bulunamadı.");
+
+        if (purchase.Quantity <= 0)
+            throw new BusinessException("Alış miktarı 0'dan büyük olmalıdır.");
+
+        if (purchase.Price <= 0)
+            throw new BusinessException("Alış fiyatı 0'dan büyük olmalıdır.");
+
+        // Toplam tutar tekrar hesaplanır
+        purchase.Amount = purchase.Quantity * purchase.Price;
+
+        _purchaseRepo.Update(purchase);
+        _purchaseRepo.Save();
     }
 }
