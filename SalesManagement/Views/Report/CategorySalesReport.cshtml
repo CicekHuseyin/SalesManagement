@@ -1,0 +1,79 @@
+﻿@{
+    ViewData["Title"] = "Kategoriye Göre Satış Raporu";
+}
+
+<h3 style="text-align:center; margin-bottom:20px;">Kategoriye Göre Satış Raporu</h3>
+
+<div style="margin-bottom:15px; text-align:center;">
+    <button id="btnRefresh"
+            style="padding:5px 10px; background-color:#4CAF50; color:white; border:none; border-radius:4px;">
+        Yenile
+    </button>
+</div>
+
+<div id="categorySalesGrid" style="margin:auto; width:80%;"></div>
+
+@section Scripts {
+    <script>
+        $(function () {
+
+            // Grid tanımı
+            const grid = $("#categorySalesGrid").dxDataGrid({
+                dataSource: {
+                    load: function() {
+                        return $.getJSON("/Report/GetCategorySalesReport");
+                    }
+                },
+                columns: [
+                    {
+                        dataField: "categoryName",
+                        caption: "Kategori",
+                        alignment: "center",
+                        headerCellTemplate: function(header, info) {
+                            return $("<div style='font-weight:bold; text-align:center;'>")
+                                .text(info.column.caption);
+                        }
+                    },
+                    {
+                        dataField: "totalQuantity",
+                        caption: "Toplam Adet",
+                        alignment: "center",
+                        headerCellTemplate: function(header, info) {
+                            return $("<div style='font-weight:bold; text-align:center;'>")
+                                .text(info.column.caption);
+                        }
+                    },
+                    {
+                        dataField: "salesPrice",
+                        caption: "Satış Fiyatı",
+                        alignment: "center",
+                        headerCellTemplate: function(header, info) {
+                            return $("<div style='font-weight:bold; text-align:center;'>")
+                                .text(info.column.caption);
+                        }
+                    }
+                ],
+                showBorders: true,
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                columnAutoWidth: true,
+                allowColumnResizing: true,
+                wordWrapEnabled: true,
+                paging: { pageSize: 10 },
+                sorting: { mode: "multiple" },
+                height: 500,
+                onCellPrepared: function(e) {
+                    if (e.rowType === "data") {
+                        $(e.cellElement).css("text-align", "center");
+                    }
+                }
+            }).dxDataGrid("instance");
+
+            // Yenile butonu
+            $("#btnRefresh").on("click", function () {
+                grid.refresh();
+            });
+
+        });
+    </script>
+}

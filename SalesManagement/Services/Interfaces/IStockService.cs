@@ -8,4 +8,5 @@ public interface IStockService
     void DecreaseStock(int productId, double quantity);
     double GetCurrentStock(int productId);
     bool HasStock(int productId, double quantity);
+    IEnumerable<Stock> GetStocks();
 }

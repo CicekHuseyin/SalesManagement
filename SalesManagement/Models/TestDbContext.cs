@@ -19,6 +19,7 @@ namespace SalesManagement.Models
         public virtual DbSet<Purchase> Purchases { get; set; } = null!;
         public virtual DbSet<Sale> Sales { get; set; } = null!;
         public virtual DbSet<Stock> Stocks { get; set; } = null!;
+        public virtual DbSet<CategorySalesReportDto> CategorySalesReportDtos { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -27,6 +28,8 @@ namespace SalesManagement.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<CategorySalesReportDto>().HasNoKey();
+
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.HasOne(d => d.Category)

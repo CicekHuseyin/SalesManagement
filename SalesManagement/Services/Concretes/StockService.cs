@@ -1,4 +1,5 @@
-﻿using SalesManagement.Core.Exceptions;
+﻿using Microsoft.EntityFrameworkCore;
+using SalesManagement.Core.Exceptions;
 using SalesManagement.Data.Interfaces;
 using SalesManagement.Models;
 using SalesManagement.Services.Interfaces;
@@ -97,5 +98,12 @@ public class StockService : IStockService
     {
         var stock = _stockRepo.Get(s => s.ProductId == productId);
         return (stock?.Quantity ?? 0) >= quantity;
+    }
+
+    public IEnumerable<Stock> GetStocks()
+    {
+        return _stockRepo.Query()
+                     .Include(x => x.Product) 
+                     .ToList();                
     }
 }

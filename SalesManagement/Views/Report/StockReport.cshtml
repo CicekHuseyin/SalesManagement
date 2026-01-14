@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Stok Raporu";
+}
+
+<h3 style="text-align:center; margin-bottom:20px;">Stok Durumu</h3>
+
+<div id="stockGrid" style="margin:auto; width:80%;"></div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $("#stockGrid").dxDataGrid({
+                dataSource: "/Report/GetStockReport",
+                columns: [
+                    {
+                        dataField: "productName",
+                        caption: "Ürün",
+                        alignment: "center",
+                        headerCellTemplate: function(header, info) {
+                            return $("<div style='font-weight:bold; text-align:center;'>")
+                                .text(info.column.caption);
+                        }
+                    },
+                    {
+                        dataField: "totalStock",
+                        caption: "Toplam Stok",
+                        alignment: "center",
+                        headerCellTemplate: function(header, info) {
+                            return $("<div style='font-weight:bold; text-align:center;'>")
+                                .text(info.column.caption);
+                        }
+                    }
+                ],
+                showBorders: true,
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                columnAutoWidth: true,
+                allowColumnResizing: true,
+                wordWrapEnabled: true,
+                paging: { pageSize: 10 },
+                searchPanel: {
+                    visible: true,
+                    placeholder: "Ara..."
+                },
+                onCellPrepared: function(e) {
+                    if (e.rowType === "data") {
+                        $(e.cellElement).css("text-align", "center");
+                    }
+                }
+            });
+        });
+    </script>
+}
