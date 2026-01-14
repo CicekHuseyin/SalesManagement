@@ -84,4 +84,67 @@ public class SaleService : ISaleService
             .Include(s => s.Customer)
             .ToList();
     }
+
+    public void UpdateSale(Sale sale)
+    {
+        // Fluent validation
+        var validationResult = _validator.Validate(sale);
+        if (!validationResult.IsValid)
+            throw new BusinessException(validationResult.Errors.First().ErrorMessage);
+
+        // Mevcut satış kontrolü
+        var existingSale = _saleRepo.GetById(sale.Id);
+        if (existingSale == null)
+            throw new BusinessException("Güncellenecek satış bulunamadı.");
+
+        // Ürün kontrolü
+        var product = _productRepo.Get(p => p.Id == sale.ProductId);
+        if (product == null)
+            throw new BusinessException("Ürün bulunamadı.");
+
+        // Liste fiyatı ürün tablosundan tekrar alınır
+        sale.Listprice = product.Salesprice;
+
+        if (sale.Listprice <= 0)
+            throw new BusinessException("Ürünün liste fiyatı geçersiz.");
+
+        // İskonto oranı hesaplama
+        sale.Discountrate =
+            ((sale.Listprice - sale.Salesprice) / sale.Listprice) * 100;
+
+        if (sale.Discountrate < 0)
+            sale.Discountrate = 0;
+
+        // Toplam tutar
+        sale.Amount = sale.Quantity * sale.Salesprice;
+
+        // STOK FARK HESABI
+        var quantityDifference =
+            (sale.Quantity ?? 0) - (existingSale.Quantity ?? 0);
+
+        if (quantityDifference > 0)
+        {
+            // Ek satış → stok düş
+            _stockService.DecreaseStock(sale.ProductId.Value,quantityDifference);
+        }
+        else if (quantityDifference < 0)
+        {
+            // Satış azaltıldı → stok iade
+            _stockService.IncreaseStock(sale.ProductId.Value,Math.Abs(quantityDifference));
+        }
+
+
+        // Güncellenecek alanlar
+        existingSale.CustomerId = sale.CustomerId;
+        existingSale.ProductId = sale.ProductId;
+        existingSale.Quantity = sale.Quantity;
+        existingSale.Listprice = sale.Listprice;
+        existingSale.Salesprice = sale.Salesprice;
+        existingSale.Discountrate = sale.Discountrate;
+        existingSale.Amount = sale.Amount;
+
+        _saleRepo.Update(existingSale);
+        _saleRepo.Save();
+    }
+
 }
